@@ -21,7 +21,7 @@ def plot_all_in_one(daily_returns, results_df, best_portfolio, tickers, start_da
     """
     Generates a single figure with three subplots using the custom layout:
     Line 1: Portfolio Performance (70% width) | Pie (30% Width)
-    Line 2: Monte Carlo Simulation (100% width)
+    Line 2: Monte Carlo Simulation (70% width) (Aligned with Performance plot)
     """
     setup_style()
     
@@ -35,22 +35,30 @@ def plot_all_in_one(daily_returns, results_df, best_portfolio, tickers, start_da
     cumulative_returns = (1 + port_daily_returns).cumprod()
     cumulative_returns_pct = (cumulative_returns - 1) * 100
     
+    # --- Colormap Selection ---
+    # Usar um colormap grande e contrastante (como 'tab20') para a pie chart
+    cmap = plt.get_cmap('tab20')
+    colors = cmap(np.arange(len(pie_weights)) % cmap.N) # Ciclo de cores garantido
+
     # ----------------------------------------------------
     # 2. Setup the figure and the custom 2-row layout
     # ----------------------------------------------------
     
-    # Increase figure height slightly for better vertical separation
     fig = plt.figure(figsize=(24, 16)) 
-    fig.suptitle('Sortino Ratio Portfolio Optimization Analysis', fontsize=24, y=0.98)
+    fig.suptitle('Sortino Ratio Portfolio Optimization', fontsize=24, y=0.98, fontweight='bold')
     
-    # Ax1: Portfolio Performance (Line 1, takes 2/3 of the width)
+    # Ax1: Portfolio Performance (Row 0, takes 2/3 width)
     ax1 = plt.subplot2grid((2, 3), (0, 0), colspan=2)
     
-    # Ax2: Pie Chart (Line 1, takes 1/3 of the width)
+    # Ax2: Pie Chart (Row 0, takes 1/3 width)
     ax2 = plt.subplot2grid((2, 3), (0, 2))
     
-    # Ax0: Monte Carlo Simulation (Line 2, takes all 3 columns)
-    ax0 = plt.subplot2grid((2, 3), (1, 0), colspan=3)
+    # Ax0: Monte Carlo Simulation (Row 1, takes 2/3 width - Aligned with Ax1)
+    ax0 = plt.subplot2grid((2, 3), (1, 0), colspan=2) 
+    
+    # Ax3: Empty space for Legend and Color Bar (Row 1, Col 2)
+    ax3 = plt.subplot2grid((2, 3), (1, 2))
+    ax3.axis('off')
 
 
     # --- Plot 1: Portfolio Performance (Line Plot) ---
@@ -61,12 +69,25 @@ def plot_all_in_one(daily_returns, results_df, best_portfolio, tickers, start_da
     ax1.grid(True, linestyle='--', alpha=0.5)
 
     # --- Plot 2: Portfolio Composition (Pie Chart) ---
-    ax2.pie(
+    
+    # CRIAÇÃO DA LISTA DE RÓTULOS COMPLETA PARA A LEGENDA
+    legend_labels = [f'{ticker}: {weight*100:.1f}%' for ticker, weight in pie_weights.items()]
+    
+    # Gera a pie chart, usando o array de cores exclusivo
+    wedges, texts = ax2.pie(
         pie_weights, 
-        labels=pie_weights.index, 
-        autopct='%1.1f%%',
-        startangle=90
+        colors=colors,               # Usa cores únicas
+        startangle=90,
+        pctdistance=1.1, 
+        labeldistance=1.1
     )
+    
+    # ADICIONAR LEGENDA PARA MOSTRAR OS RÓTULOS (TICKER: X%)
+    ax2.legend(wedges, legend_labels,
+              title="Allocation",
+              loc="center left", 
+              bbox_to_anchor=(1.05, 0, 0.5, 1)) # Ajustado bbox_to_anchor
+    
     ax2.set_title('Max Sortino Portfolio Composition')
 
     # --- Plot 3: Monte Carlo Simulation Scatter (Efficient Frontier) ---
@@ -80,8 +101,10 @@ def plot_all_in_one(daily_returns, results_df, best_portfolio, tickers, start_da
         alpha=0.4,
         label='Simulated Portfolios'
     )
-    # Add colorbar to the scatter plot (ax0)
-    cbar = fig.colorbar(scatter, ax=ax0)
+    
+    # Place colorbar in the empty subplot (ax3)
+    cbar = fig.colorbar(scatter, ax=ax3, fraction=1.0, pad=0.0) 
+    cbar.ax.set_visible(True)
     cbar.set_label('Sortino Ratio')
     
     # Highlight the Max Sortino portfolio
@@ -97,12 +120,12 @@ def plot_all_in_one(daily_returns, results_df, best_portfolio, tickers, start_da
     ax0.set_title('Monte Carlo Simulation Scatter (Efficient Frontier)')
     ax0.set_xlabel('Annual Volatility (Risk)')
     ax0.set_ylabel('Annual Expected Return')
-    ax0.legend(loc='upper left') # Garante que a legenda está num bom local interno
+    
+    ax0.legend(loc='upper left') 
     ax0.grid(True, linestyle='--', alpha=0.5)
     
     # Apply layout adjustments
     plt.tight_layout()
-    # Ajuste: Aumentar a margem inferior (bottom=0.07 é um bom valor para legendas inferiores)
     plt.subplots_adjust(top=0.9, hspace=0.3, bottom=0.07) 
     
     plt.show()
