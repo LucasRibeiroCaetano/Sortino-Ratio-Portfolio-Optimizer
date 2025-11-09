@@ -36,9 +36,8 @@ def plot_all_in_one(daily_returns, results_df, best_portfolio, tickers, start_da
     cumulative_returns_pct = (cumulative_returns - 1) * 100
     
     # --- Colormap Selection ---
-    # Usar um colormap grande e contrastante (como 'tab20') para a pie chart
     cmap = plt.get_cmap('tab20')
-    colors = cmap(np.arange(len(pie_weights)) % cmap.N) # Ciclo de cores garantido
+    colors = cmap(np.arange(len(pie_weights)) % cmap.N) # Guaranteed unique colors
 
     # ----------------------------------------------------
     # 2. Setup the figure and the custom 2-row layout
@@ -69,11 +68,11 @@ def plot_all_in_one(daily_returns, results_df, best_portfolio, tickers, start_da
     ax1.grid(True, linestyle='--', alpha=0.5)
 
     # --- Plot 2: Portfolio Composition (Pie Chart) ---
-    
-    # CRIAÇÃO DA LISTA DE RÓTULOS COMPLETA PARA A LEGENDA
+
+    # Create legend labels with ticker and percentage    
     legend_labels = [f'{ticker}: {weight*100:.1f}%' for ticker, weight in pie_weights.items()]
     
-    # Gera a pie chart, usando o array de cores exclusivo
+    # Plot pie chart
     wedges, texts = ax2.pie(
         pie_weights, 
         colors=colors,               # Usa cores únicas
@@ -82,11 +81,11 @@ def plot_all_in_one(daily_returns, results_df, best_portfolio, tickers, start_da
         labeldistance=1.1
     )
     
-    # ADICIONAR LEGENDA PARA MOSTRAR OS RÓTULOS (TICKER: X%)
+    # Add legend outside the pie chart
     ax2.legend(wedges, legend_labels,
               title="Allocation",
               loc="center left", 
-              bbox_to_anchor=(1.05, 0, 0.5, 1)) # Ajustado bbox_to_anchor
+              bbox_to_anchor=(1.05, 0, 0.5, 1))
     
     ax2.set_title('Max Sortino Portfolio Composition')
 

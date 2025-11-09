@@ -55,10 +55,10 @@ def run_monte_carlo(daily_returns, num_portfolios, risk_free_rate):
         # Store results, including the weights array
         results.append([port_return, port_volatility, port_sortino, weights])
     
-    # Convert results to DataFrame. RENAMED 'Pesos' to 'Weights' here.
+    # Convert results to DataFrame.
     results_df = pd.DataFrame(
         results,
-        columns=['Retorno', 'Volatilidade', 'Sortino', 'Weights'] # Corrected column name
+        columns=['Retorno', 'Volatilidade', 'Sortino', 'Weights']
     )
     
     return results_df

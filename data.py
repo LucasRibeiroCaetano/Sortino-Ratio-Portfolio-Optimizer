@@ -32,7 +32,6 @@ def get_data(tickers, start_date, end_date):
             else:
                 print(f"Warning: No data found for ticker {ticker}.")
         except Exception as e:
-            # BTC-USD, por exemplo, pode falhar em períodos muito longos.
             print(f"Error downloading data for {ticker}: {e}")
             
     if not price_data:

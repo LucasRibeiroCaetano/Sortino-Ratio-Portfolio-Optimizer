@@ -17,8 +17,7 @@ def main():
         
     daily_returns = data.calculate_returns(data_raw)
     
-    # === CORREÇÃO CRUCIAL AQUI ===
-    # Obter a lista real de tickers bem-sucedidos das colunas do DataFrame
+    # Get the list of successfully downloaded tickers
     successful_tickers = data_raw.columns.tolist() 
 
     # 2. Optimize Portfolio
@@ -40,7 +39,7 @@ def main():
     print(f"Sortino Ratio:           {best_portfolio['Sortino']:.2f}")
     
     print("\nOptimal Allocation (Weights):")
-    # Usar a lista 'successful_tickers' como índice.
+
     allocation = pd.Series(best_portfolio['Weights'], index=successful_tickers) 
     print((allocation[allocation > 0.01] * 100).map(lambda x: f'{x:.2f}%'))
 
@@ -50,7 +49,7 @@ def main():
         daily_returns, 
         results_df, 
         best_portfolio, 
-        successful_tickers, # Passar a lista correta para a função de plotagem
+        successful_tickers, # Use only tickers with data
         config.START_DATE, 
         config.END_DATE
     )
