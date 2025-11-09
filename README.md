@@ -1,6 +1,8 @@
 # Sortino Ratio Portfolio Optimizer
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
+![Libraries](https://img.shields.io/badge/Libraries-Pandas%20%7C%20NumPy%7C%20Tqdm-orange)
+![Visualization](https://img.shields.io/badge/Visualization-Matplotlib%20%7C%20matplotx-brightgreen)
 
 ---
 
