@@ -51,6 +51,6 @@ python main.py -t AAPL MSFT GOOGL NVDA
 ```
 To see all available options:
 ```bash
-python main.py -help
+python main.py --help | -h
 ```
 
