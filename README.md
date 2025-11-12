@@ -44,3 +44,13 @@ cd Sortino-Ratio-Portfolio-Optimizer
 pip install -r requirements.txt
 ```
 
+### Run
+In order to run the software, you can provide your preferred list of tickers (optional), aswell as the date for the analysis.
+```bash
+python main.py -t AAPL MSFT GOOGL NVDA
+```
+To see all available options:
+```bash
+python main.py -help
+```
+
